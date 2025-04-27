@@ -1,0 +1,563 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		41FC30FA2DBE4FEF00F2FCD3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 41FC30E42DBE4FEE00F2FCD3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 41FC30EB2DBE4FEE00F2FCD3;
+			remoteInfo = "Smart T-shirt";
+		};
+		41FC31042DBE4FEF00F2FCD3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 41FC30E42DBE4FEE00F2FCD3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 41FC30EB2DBE4FEE00F2FCD3;
+			remoteInfo = "Smart T-shirt";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		41FC30EC2DBE4FEE00F2FCD3 /* Smart T-shirt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Smart T-shirt.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		41FC30F92DBE4FEF00F2FCD3 /* Smart T-shirtTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Smart T-shirtTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		41FC31032DBE4FEF00F2FCD3 /* Smart T-shirtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Smart T-shirtUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		41FC30EE2DBE4FEE00F2FCD3 /* Smart T-shirt */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Smart T-shirt";
+			sourceTree = "<group>";
+		};
+		41FC30FC2DBE4FEF00F2FCD3 /* Smart T-shirtTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Smart T-shirtTests";
+			sourceTree = "<group>";
+		};
+		41FC31062DBE4FEF00F2FCD3 /* Smart T-shirtUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Smart T-shirtUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		41FC30E92DBE4FEE00F2FCD3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41FC30F62DBE4FEF00F2FCD3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41FC31002DBE4FEF00F2FCD3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		41FC30E32DBE4FEE00F2FCD3 = {
+			isa = PBXGroup;
+			children = (
+				41FC30EE2DBE4FEE00F2FCD3 /* Smart T-shirt */,
+				41FC30FC2DBE4FEF00F2FCD3 /* Smart T-shirtTests */,
+				41FC31062DBE4FEF00F2FCD3 /* Smart T-shirtUITests */,
+				41FC30ED2DBE4FEE00F2FCD3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		41FC30ED2DBE4FEE00F2FCD3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				41FC30EC2DBE4FEE00F2FCD3 /* Smart T-shirt.app */,
+				41FC30F92DBE4FEF00F2FCD3 /* Smart T-shirtTests.xctest */,
+				41FC31032DBE4FEF00F2FCD3 /* Smart T-shirtUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		41FC30EB2DBE4FEE00F2FCD3 /* Smart T-shirt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41FC310D2DBE4FEF00F2FCD3 /* Build configuration list for PBXNativeTarget "Smart T-shirt" */;
+			buildPhases = (
+				41FC30E82DBE4FEE00F2FCD3 /* Sources */,
+				41FC30E92DBE4FEE00F2FCD3 /* Frameworks */,
+				41FC30EA2DBE4FEE00F2FCD3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				41FC30EE2DBE4FEE00F2FCD3 /* Smart T-shirt */,
+			);
+			name = "Smart T-shirt";
+			packageProductDependencies = (
+			);
+			productName = "Smart T-shirt";
+			productReference = 41FC30EC2DBE4FEE00F2FCD3 /* Smart T-shirt.app */;
+			productType = "com.apple.product-type.application";
+		};
+		41FC30F82DBE4FEF00F2FCD3 /* Smart T-shirtTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41FC31102DBE4FEF00F2FCD3 /* Build configuration list for PBXNativeTarget "Smart T-shirtTests" */;
+			buildPhases = (
+				41FC30F52DBE4FEF00F2FCD3 /* Sources */,
+				41FC30F62DBE4FEF00F2FCD3 /* Frameworks */,
+				41FC30F72DBE4FEF00F2FCD3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				41FC30FB2DBE4FEF00F2FCD3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				41FC30FC2DBE4FEF00F2FCD3 /* Smart T-shirtTests */,
+			);
+			name = "Smart T-shirtTests";
+			packageProductDependencies = (
+			);
+			productName = "Smart T-shirtTests";
+			productReference = 41FC30F92DBE4FEF00F2FCD3 /* Smart T-shirtTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		41FC31022DBE4FEF00F2FCD3 /* Smart T-shirtUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41FC31132DBE4FEF00F2FCD3 /* Build configuration list for PBXNativeTarget "Smart T-shirtUITests" */;
+			buildPhases = (
+				41FC30FF2DBE4FEF00F2FCD3 /* Sources */,
+				41FC31002DBE4FEF00F2FCD3 /* Frameworks */,
+				41FC31012DBE4FEF00F2FCD3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				41FC31052DBE4FEF00F2FCD3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				41FC31062DBE4FEF00F2FCD3 /* Smart T-shirtUITests */,
+			);
+			name = "Smart T-shirtUITests";
+			packageProductDependencies = (
+			);
+			productName = "Smart T-shirtUITests";
+			productReference = 41FC31032DBE4FEF00F2FCD3 /* Smart T-shirtUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		41FC30E42DBE4FEE00F2FCD3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					41FC30EB2DBE4FEE00F2FCD3 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					41FC30F82DBE4FEF00F2FCD3 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 41FC30EB2DBE4FEE00F2FCD3;
+					};
+					41FC31022DBE4FEF00F2FCD3 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 41FC30EB2DBE4FEE00F2FCD3;
+					};
+				};
+			};
+			buildConfigurationList = 41FC30E72DBE4FEE00F2FCD3 /* Build configuration list for PBXProject "Smart T-shirt" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 41FC30E32DBE4FEE00F2FCD3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 41FC30ED2DBE4FEE00F2FCD3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				41FC30EB2DBE4FEE00F2FCD3 /* Smart T-shirt */,
+				41FC30F82DBE4FEF00F2FCD3 /* Smart T-shirtTests */,
+				41FC31022DBE4FEF00F2FCD3 /* Smart T-shirtUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		41FC30EA2DBE4FEE00F2FCD3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41FC30F72DBE4FEF00F2FCD3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41FC31012DBE4FEF00F2FCD3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		41FC30E82DBE4FEE00F2FCD3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41FC30F52DBE4FEF00F2FCD3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41FC30FF2DBE4FEF00F2FCD3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		41FC30FB2DBE4FEF00F2FCD3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 41FC30EB2DBE4FEE00F2FCD3 /* Smart T-shirt */;
+			targetProxy = 41FC30FA2DBE4FEF00F2FCD3 /* PBXContainerItemProxy */;
+		};
+		41FC31052DBE4FEF00F2FCD3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 41FC30EB2DBE4FEE00F2FCD3 /* Smart T-shirt */;
+			targetProxy = 41FC31042DBE4FEF00F2FCD3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		41FC310B2DBE4FEF00F2FCD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		41FC310C2DBE4FEF00F2FCD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		41FC310E2DBE4FEF00F2FCD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "shteam.Smart-T-shirt";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		41FC310F2DBE4FEF00F2FCD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "shteam.Smart-T-shirt";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		41FC31112DBE4FEF00F2FCD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "shteam.Smart-T-shirtTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smart T-shirt.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smart T-shirt";
+			};
+			name = Debug;
+		};
+		41FC31122DBE4FEF00F2FCD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "shteam.Smart-T-shirtTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Smart T-shirt.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Smart T-shirt";
+			};
+			name = Release;
+		};
+		41FC31142DBE4FEF00F2FCD3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "shteam.Smart-T-shirtUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Smart T-shirt";
+			};
+			name = Debug;
+		};
+		41FC31152DBE4FEF00F2FCD3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 244735TY4Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "shteam.Smart-T-shirtUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Smart T-shirt";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		41FC30E72DBE4FEE00F2FCD3 /* Build configuration list for PBXProject "Smart T-shirt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41FC310B2DBE4FEF00F2FCD3 /* Debug */,
+				41FC310C2DBE4FEF00F2FCD3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41FC310D2DBE4FEF00F2FCD3 /* Build configuration list for PBXNativeTarget "Smart T-shirt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41FC310E2DBE4FEF00F2FCD3 /* Debug */,
+				41FC310F2DBE4FEF00F2FCD3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41FC31102DBE4FEF00F2FCD3 /* Build configuration list for PBXNativeTarget "Smart T-shirtTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41FC31112DBE4FEF00F2FCD3 /* Debug */,
+				41FC31122DBE4FEF00F2FCD3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41FC31132DBE4FEF00F2FCD3 /* Build configuration list for PBXNativeTarget "Smart T-shirtUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41FC31142DBE4FEF00F2FCD3 /* Debug */,
+				41FC31152DBE4FEF00F2FCD3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 41FC30E42DBE4FEE00F2FCD3 /* Project object */;
+}
