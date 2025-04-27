@@ -22,10 +22,13 @@ class ECGViewModel: ObservableObject {
     @Published var errorMessage: String? = nil // To show errors in UI
     @Published var lastAbnormalTimestamp: Date? = nil // Store the last abnormal event time
     @Published var abnormalTimestamps: [Date] = [] // History of abnormal events
+    @Published var shouldShowCallAlert: Bool = false // New: show alert for emergency call
+    @Published var hasDismissedCallAlert: Bool = false // New: track if user dismissed alert
     private let maxHistoryCount = 5 // Max number of history items
 
     private var fetchDataSubscription: AnyCancellable?
     private var setModeTask: AnyCancellable?
+    private var statusPollingSubscription: AnyCancellable? // New for status polling
     private let backendBaseUrl = "https://smart-t-shirt.onrender.com"
 
     // Date Formatter for ISO8601 - Removed static as it's not needed here anymore
@@ -60,11 +63,21 @@ class ECGViewModel: ObservableObject {
         return decoder
     }()
 
+    private var abnormalStartTime: Date? = nil // Track when abnormal started
+    private var abnormalCheckTimer: Timer? = nil // Timer for checking abnormal duration
+
+    // Observe backendMode changes
+    private var backendModeObserver: AnyCancellable? = nil
+
     init() {
         // Start polling the backend for data periodically
         startFetchingData()
-        // Optionally fetch initial status
-        // fetchBackendStatus()
+        // Start polling the backend status periodically
+        startPollingBackendStatus()
+        // Observe backendMode for abnormal duration
+        backendModeObserver = $backendMode.sink { [weak self] _ in
+            self?.handleAbnormalDuration()
+        }
     }
 
     // Function to start polling the /data endpoint
@@ -257,9 +270,73 @@ class ECGViewModel: ObservableObject {
         }
     }
 
+    // Poll /status every 2 seconds
+    func startPollingBackendStatus() {
+        statusPollingSubscription?.cancel()
+        statusPollingSubscription = Timer.publish(every: 2.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.fetchBackendStatus()
+            }
+    }
+
+    // Fetch /status and update backendMode
+    private func fetchBackendStatus() {
+        guard let url = URL(string: "\(backendBaseUrl)/status") else { return }
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                if let data = data,
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let mode = json["mode"] as? String {
+                    self.backendMode = mode
+                }
+            }
+        }.resume()
+    }
+
+    // Observe backendMode changes to track abnormal duration
+    private func handleAbnormalDuration() {
+        abnormalCheckTimer?.invalidate()
+        if backendMode == "abnormal" {
+            if abnormalStartTime == nil {
+                abnormalStartTime = Date()
+            }
+            // Run timer logic on main thread to safely access MainActor properties
+            abnormalCheckTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+                DispatchQueue.main.async { 
+                    guard let self = self else { return }
+                    if self.backendMode != "abnormal" {
+                        self.abnormalStartTime = nil
+                        self.abnormalCheckTimer?.invalidate()
+                        self.shouldShowCallAlert = false
+                        self.hasDismissedCallAlert = false
+                    } else if let start = self.abnormalStartTime, Date().timeIntervalSince(start) > 10 {
+                        if !self.hasDismissedCallAlert {
+                            self.shouldShowCallAlert = true
+                        }
+                    }
+                }
+            }
+        } else {
+            abnormalStartTime = nil
+            shouldShowCallAlert = false
+            hasDismissedCallAlert = false // Reset when mode returns to normal
+        }
+    }
+
+    // Call this from the alert action in ContentView
+    func dismissCallAlert() {
+        shouldShowCallAlert = false
+        hasDismissedCallAlert = true
+    }
+
     deinit {
         // Stop the timers when the view model is deallocated
         fetchDataSubscription?.cancel()
         setModeTask?.cancel()
+        statusPollingSubscription?.cancel()
+        abnormalCheckTimer?.invalidate()
+        backendModeObserver?.cancel()
     }
 } 

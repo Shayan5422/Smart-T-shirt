@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Charts // Import Charts framework
+import Charts
 
 // Helper View for Status and Error Messages
 struct StatusHeaderView: View {
@@ -22,14 +22,12 @@ struct StatusHeaderView: View {
         VStack(alignment: .center, spacing: 4) {
             HStack(spacing: 8) {
                 Image(systemName: statusIcon)
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.system(size: 22, weight: .semibold))
                     .foregroundColor(statusColor)
-                    .shadow(color: statusColor.opacity(0.3), radius: 4, x: 0, y: 2)
                 Text("Status: \(viewModel.backendMode.capitalized)")
-                    .font(.title3.bold())
+                    .font(.headline.weight(.semibold))
                     .foregroundColor(statusColor)
             }
-            .padding(.bottom, 2)
             if let timestamp = viewModel.lastAbnormalTimestamp {
                 HStack(spacing: 4) {
                     Image(systemName: "exclamationmark.triangle.fill")
@@ -52,11 +50,14 @@ struct StatusHeaderView: View {
                 .padding(.horizontal)
             }
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, 10)
         .padding(.horizontal)
-        .background(.ultraThinMaterial)
-        .cornerRadius(18)
-        .shadow(color: statusColor.opacity(0.12), radius: 10, x: 0, y: 4)
+        .background(Color(.systemBackground))
+        .cornerRadius(14)
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color(.separator), lineWidth: 1)
+        )
     }
     
     // Computed property for status color
@@ -78,70 +79,6 @@ struct StatusHeaderView: View {
     }
 }
 
-// Helper View for the Chart or Placeholder Text
-struct ECGChartView: View {
-    @ObservedObject var viewModel: ECGViewModel
-    private var placeholderText: String {
-        viewModel.backendMode == "stopped" ? "Backend stopped. Use control script to start." : "Waiting for data..."
-    }
-
-    var body: some View {
-        Group {
-            if viewModel.ecgData.isEmpty {
-                Text(placeholderText)
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .frame(height: 300)
-                    .frame(maxWidth: .infinity)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(18)
-                    .shadow(color: .blue.opacity(0.08), radius: 8, x: 0, y: 2)
-                    .padding(.horizontal)
-            } else {
-                ActualECGChart(viewModel: viewModel)
-            }
-        }
-    }
-}
-
-// Helper View: The actual Chart display
-struct ActualECGChart: View {
-    @ObservedObject var viewModel: ECGViewModel
-    private let normalColor = Color.blue // Define colors
-    private let abnormalColor = Color.red
-    
-    var body: some View {
-        Chart {
-            ForEach(viewModel.ecgData) { dataPoint in
-                LineMark(
-                    x: .value("Time", dataPoint.time),
-                    y: .value("Value", dataPoint.value)
-                )
-                .foregroundStyle(dataPoint.value > 140 ? abnormalColor : normalColor)
-                .interpolationMethod(.catmullRom)
-            }
-        }
-        .chartXScale(domain: .automatic)
-        .chartXAxis {
-            AxisMarks(preset: .aligned, values: .stride(by: .second, count: 2)) { _ in
-                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [2, 3]))
-                AxisTick()
-                AxisValueLabel(format: .dateTime.hour().minute().second(), centered: false, multiLabelAlignment: .trailing)
-            }
-        }
-        .chartYAxisLabel("mV", alignment: .center)
-        .chartYScale(domain: .automatic(includesZero: false))
-        .frame(height: 300)
-        .padding()
-        .background(.ultraThinMaterial)
-        .cornerRadius(18)
-        .shadow(color: .blue.opacity(0.10), radius: 10, x: 0, y: 4)
-        .padding(.horizontal)
-    }
-}
-
 // Helper View: Abnormal Event History List
 struct AbnormalHistoryView: View {
     @ObservedObject var viewModel: ECGViewModel
@@ -153,36 +90,37 @@ struct AbnormalHistoryView: View {
     }()
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
             if !viewModel.abnormalTimestamps.isEmpty {
                 Text("Recent Abnormal Events")
-                    .font(.headline)
+                    .font(.subheadline.weight(.semibold))
                     .foregroundColor(.accentColor)
+                    .padding(.leading, 8)
                     .padding(.top, 4)
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 8) {
-                        ForEach(viewModel.abnormalTimestamps.reversed(), id: \.self) { timestamp in
-                            HStack {
-                                Image(systemName: "exclamationmark.bubble.fill")
-                                    .foregroundColor(.red)
-                                Text(timestamp, formatter: Self.historyDateFormatter)
-                                Spacer()
-                            }
-                            .font(.caption)
-                            .padding(.vertical, 2)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(viewModel.abnormalTimestamps.reversed(), id: \.self) { timestamp in
+                        HStack(spacing: 8) {
+                            Image(systemName: "exclamationmark.bubble.fill")
+                                .foregroundColor(.red)
+                            Text(timestamp, formatter: Self.historyDateFormatter)
+                                .font(.caption)
+                                .foregroundColor(.primary)
                         }
+                        .padding(.vertical, 2)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
-                    .padding(.horizontal)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxHeight: 110)
-                .background(.ultraThinMaterial)
-                .cornerRadius(14)
-                .shadow(color: .red.opacity(0.08), radius: 8, x: 0, y: 2)
-                .padding(.horizontal)
+                .padding(.horizontal, 8)
+                .padding(.bottom, 8)
             }
         }
+        .background(Color(.systemBackground))
+        .cornerRadius(14)
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color(.separator), lineWidth: 1)
+        )
+        .padding(.horizontal)
         .animation(.easeInOut, value: viewModel.abnormalTimestamps)
     }
 }
@@ -192,44 +130,64 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
-                // Gradient background
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.blue.opacity(0.12), Color.white]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: 24) {
-                        Image(systemName: "heart.pulse.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
-                            .foregroundColor(.accentColor)
-                            .shadow(color: .accentColor.opacity(0.18), radius: 8, x: 0, y: 4)
-                            .padding(.top, 12)
-                        Text("Smart T-Shirt Monitor")
-                            .font(.largeTitle.bold())
-                            .foregroundColor(.accentColor)
-                            .shadow(color: .accentColor.opacity(0.10), radius: 2, x: 0, y: 1)
-                        Divider().padding(.horizontal)
-                        StatusHeaderView(viewModel: viewModel)
-                        Divider().padding(.horizontal)
+            ScrollView {
+                VStack(spacing: 20) {
+                    Image(systemName: "heart.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 48, height: 48)
+                        .foregroundColor(.accentColor)
+                        .padding(.top, 16)
+                    Text("Smart T-Shirt Monitor")
+                        .font(.title.weight(.bold))
+                        .foregroundColor(.primary)
+                        .padding(.bottom, 2)
+                    StatusHeaderView(viewModel: viewModel)
+                    // Show placeholder if no data, otherwise show the chart
+                    if viewModel.ecgData.isEmpty {
+                        Text(viewModel.backendMode == "stopped" ? "Backend stopped. Use control script to start." : "Waiting for data...")
+                            .font(.callout)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .frame(height: 300)
+                            .frame(maxWidth: .infinity)
+                            .background(Color(.systemBackground))
+                            .cornerRadius(14)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .stroke(Color(.separator), lineWidth: 1)
+                            )
+                            .padding(.horizontal)
+                    } else {
                         ECGChartView(viewModel: viewModel)
-                        Divider().padding(.horizontal)
-                        AbnormalHistoryView(viewModel: viewModel)
-                        Spacer(minLength: 30)
                     }
-                    .padding(.bottom)
+                    AbnormalHistoryView(viewModel: viewModel)
+                    Spacer(minLength: 30)
                 }
+                .padding(.bottom)
             }
+            .background(Color(.systemBackground).ignoresSafeArea())
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         }
-        .tint(Color.blue)
+        .tint(.accentColor)
+        .alert(
+            "Le rythme cardiaque anormal a duré plus de 10 secondes !",
+            isPresented: $viewModel.shouldShowCallAlert
+        ) {
+            Button("Appeler les urgences") {
+                viewModel.dismissCallAlert()
+                if let url = URL(string: "tel://112") {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("Annuler", role: .cancel) {
+                viewModel.dismissCallAlert()
+            }
+        } message: {
+            Text("Voulez-vous appeler les urgences ?")
+        }
     }
 }
 

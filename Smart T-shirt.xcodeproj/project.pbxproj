@@ -29,22 +29,9 @@
 		41FC31032DBE4FEF00F2FCD3 /* Smart T-shirtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Smart T-shirtUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		41FC31192DBE5AE400F2FCD3 /* Exceptions for "Smart T-shirt" folder in "Smart T-shirt" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Smart-T-shirt-Info.plist",
-			);
-			target = 41FC30EB2DBE4FEE00F2FCD3 /* Smart T-shirt */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		41FC30EE2DBE4FEE00F2FCD3 /* Smart T-shirt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				41FC31192DBE5AE400F2FCD3 /* Exceptions for "Smart T-shirt" folder in "Smart T-shirt" target */,
-			);
 			path = "Smart T-shirt";
 			sourceTree = "<group>";
 		};
@@ -410,6 +397,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "Smart\\ T-shirt/Assets.xcassets";
 				DEVELOPMENT_TEAM = 244735TY4Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -439,6 +427,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "Smart\\ T-shirt/Assets.xcassets";
 				DEVELOPMENT_TEAM = 244735TY4Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
