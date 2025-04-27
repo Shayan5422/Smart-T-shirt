@@ -75,6 +75,9 @@ def get_data():
     # Return a list containing a single data point, as iOS app might expect an array
     return jsonify([data_point])
 
-if __name__ == '__main__':
-    # Note: For Render, you'll use gunicorn, not the Flask dev server.
-    app.run(host='0.0.0.0', port=5001, debug=True) 
+# The following block is commented out because gunicorn will run the app
+# if __name__ == '__main__':
+#     # Note: For Render, you'll use gunicorn, not the Flask dev server.
+#     # The port is dynamically set by Render via the $PORT environment variable
+#     # Debug mode should be off in production
+#     app.run(host='0.0.0.0', port=5001, debug=False) 

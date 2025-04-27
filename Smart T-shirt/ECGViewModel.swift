@@ -23,7 +23,7 @@ class ECGViewModel: ObservableObject {
 
     private var fetchDataSubscription: AnyCancellable?
     private var setModeTask: AnyCancellable?
-    private let backendBaseUrl = "http://127.0.0.1:5001" // Backend URL (use localhost for now)
+    private let backendBaseUrl = "https://smart-t-shirt.onrender.com"
 
     // Date Formatter for ISO8601
     private static let isoDateFormatter: ISO8601DateFormatter = {
