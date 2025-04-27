@@ -20,28 +20,41 @@ class ECGViewModel: ObservableObject {
     @Published var ecgData: [ECGDataPoint] = []
     @Published var backendMode: String = "stopped" // To reflect backend state
     @Published var errorMessage: String? = nil // To show errors in UI
+    @Published var lastAbnormalTimestamp: Date? = nil // Store the last abnormal event time
+    @Published var abnormalTimestamps: [Date] = [] // History of abnormal events
+    private let maxHistoryCount = 5 // Max number of history items
 
     private var fetchDataSubscription: AnyCancellable?
     private var setModeTask: AnyCancellable?
     private let backendBaseUrl = "https://smart-t-shirt.onrender.com"
 
-    // Date Formatter for ISO8601
-    private static let isoDateFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter
-    }()
+    // Date Formatter for ISO8601 - Removed static as it's not needed here anymore
+    // private static let isoDateFormatter: ISO8601DateFormatter = {
+    //     let formatter = ISO8601DateFormatter()
+    //     formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    //     return formatter
+    // }()
 
     // JSON Decoder configured for dates
     private let jsonDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            // Create a formatter inside the closure to avoid Sendable issues
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
-            if let date = ECGViewModel.isoDateFormatter.date(from: dateString) {
+            if let date = formatter.date(from: dateString) { // Use the local formatter
                 return date
             } else {
-                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+                // Attempt decoding without fractional seconds as a fallback
+                formatter.formatOptions = [.withInternetDateTime]
+                if let date = formatter.date(from: dateString) {
+                    return date
+                } else {
+                    throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+                }
             }
         }
         return decoder
@@ -117,6 +130,13 @@ class ECGViewModel: ObservableObject {
                     // Check for abnormal data in the newly received points
                     for point in newDataPoints {
                         if point.value > 140 { // Example threshold
+                            let now = Date() // Get current timestamp
+                            self.lastAbnormalTimestamp = now 
+                            // Add to history and limit size
+                            self.abnormalTimestamps.append(now)
+                            if self.abnormalTimestamps.count > self.maxHistoryCount {
+                                self.abnormalTimestamps.removeFirst()
+                            }
                             self.triggerAbnormalNotification(value: point.value)
                         }
                     }
@@ -161,6 +181,47 @@ class ECGViewModel: ObservableObject {
                 print("Successfully set mode to \(response.new_mode)")
                 self?.backendMode = response.new_mode // Update local state
             })
+    }
+
+    // Function to send the device token to the backend
+    func sendDeviceTokenToBackend(token: String) async {
+        guard let url = URL(string: "\(backendBaseUrl)/register_device") else {
+            print("Invalid backend URL for register_device")
+            // Optionally update errorMessage on the main thread if needed
+            // DispatchQueue.main.async { self.errorMessage = "Internal Error: Cannot form register URL" }
+            return
+        }
+        
+        print("Sending device token to backend...")
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let payload = ["token": token]
+        
+        do {
+            let jsonData = try JSONEncoder().encode(payload)
+            request.httpBody = jsonData
+            
+            // Using async/await URLSession
+            let (_, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+                print("Failed to register device token with backend. Status code: \(statusCode)")
+                // Optionally update errorMessage on the main thread
+                // DispatchQueue.main.async { self.errorMessage = "Failed to register with backend (Code: \(statusCode))" }
+                return
+            }
+            
+            print("Successfully registered device token with backend.")
+            
+        } catch {
+            print("Error encoding or sending device token: \(error.localizedDescription)")
+            // Optionally update errorMessage on the main thread
+             // DispatchQueue.main.async { self.errorMessage = "Error sending token: \(error.localizedDescription)" }
+        }
     }
 
     // Helper struct to decode the /set_mode response
