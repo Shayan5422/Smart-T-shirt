@@ -15,6 +15,69 @@ struct ECGDataPoint: Identifiable, Decodable {
     }
 }
 
+// New: Structure for AI Analysis Results
+struct ECGAnalysisResult: Identifiable {
+    let id = UUID()
+    let timestamp: Date
+    let heartRate: Int
+    let rhythmType: RhythmType
+    let confidence: Double
+    let recommendation: String
+    
+    enum RhythmType: String, CaseIterable {
+        case normal = "Rythme Normal"
+        case tachycardia = "Tachycardie"
+        case bradycardia = "Bradycardie"
+        case irregular = "Rythme Irrégulier"
+        case pvc = "Contraction Ventriculaire Prématurée"
+        case afib = "Fibrillation Auriculaire"
+        
+        var color: Color {
+            switch self {
+            case .normal: return .green
+            case .tachycardia, .bradycardia: return .orange
+            case .irregular, .pvc, .afib: return .red
+            }
+        }
+    }
+}
+
+// New: ECG Session for Historical Records
+struct ECGSession: Identifiable, Codable {
+    var id: UUID
+    let startTime: Date
+    let endTime: Date
+    let averageHeartRate: Int
+    let minValue: Double
+    let maxValue: Double
+    let abnormalCount: Int
+    let durationSeconds: Int
+    
+    init(startTime: Date, endTime: Date, averageHeartRate: Int, minValue: Double, maxValue: Double, abnormalCount: Int, durationSeconds: Int) {
+        self.id = UUID()
+        self.startTime = startTime
+        self.endTime = endTime
+        self.averageHeartRate = averageHeartRate
+        self.minValue = minValue
+        self.maxValue = maxValue
+        self.abnormalCount = abnormalCount
+        self.durationSeconds = durationSeconds
+    }
+    
+    var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: startTime)
+    }
+    
+    var formattedDuration: String {
+        let minutes = durationSeconds / 60
+        let seconds = durationSeconds % 60
+        return "\(minutes)m \(seconds)s"
+    }
+}
+
 @MainActor
 class ECGViewModel: ObservableObject {
     @Published var ecgData: [ECGDataPoint] = []
@@ -24,7 +87,18 @@ class ECGViewModel: ObservableObject {
     @Published var abnormalTimestamps: [Date] = [] // History of abnormal events
     @Published var shouldShowCallAlert: Bool = false // New: show alert for emergency call
     @Published var hasDismissedCallAlert: Bool = false // New: track if user dismissed alert
+    
+    // New: AI Analysis & History features
+    @Published var isAIAnalysisEnabled = false
+    @Published var currentAnalysis: ECGAnalysisResult? = nil
+    @Published var historicalSessions: [ECGSession] = []
+    @Published var showingHistoryView = false
+    @Published var isAnalyzing = false
+    @Published var showingAnalysisDetails = false
+    
     private let maxHistoryCount = 5 // Max number of history items
+    private var currentSessionStartTime: Date? = nil
+    private var sessionTimer: Timer? = nil
 
     private var fetchDataSubscription: AnyCancellable?
     private var setModeTask: AnyCancellable?
@@ -75,9 +149,194 @@ class ECGViewModel: ObservableObject {
         // Start polling the backend status periodically
         startPollingBackendStatus()
         // Observe backendMode for abnormal duration
-        backendModeObserver = $backendMode.sink { [weak self] _ in
+        backendModeObserver = $backendMode.sink { [weak self] newMode in
             self?.handleAbnormalDuration()
+            self?.handleSessionTracking(newMode: newMode)
         }
+        
+        // Load saved sessions
+        loadSavedSessions()
+    }
+
+    // MARK: - New Session Tracking
+    
+    private func handleSessionTracking(newMode: String) {
+        if newMode != "stopped" {
+            // Start session if not already started
+            if currentSessionStartTime == nil {
+                currentSessionStartTime = Date()
+                // Start timer to periodically run AI analysis if enabled
+                setupSessionTimer()
+            }
+        } else {
+            // End session if we have a start time
+            if let startTime = currentSessionStartTime {
+                // Save the session
+                saveSession(startTime: startTime)
+                // Reset tracking
+                currentSessionStartTime = nil
+                sessionTimer?.invalidate()
+                sessionTimer = nil
+            }
+        }
+    }
+    
+    private func setupSessionTimer() {
+        sessionTimer?.invalidate()
+        sessionTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
+            // Capture le self faiblement pour éviter les cycles de référence
+            guard let self = self else { return }
+            
+            // Dispatch vers le MainActor pour accéder aux propriétés isolées
+            Task { @MainActor in
+                // Vérifier que nous avons des données
+                guard !self.ecgData.isEmpty else { return }
+                
+                // Lancer l'analyse si l'option est activée
+                if self.isAIAnalysisEnabled {
+                    self.runAIAnalysis()
+                }
+            }
+        }
+    }
+    
+    private func saveSession(startTime: Date) {
+        let endTime = Date()
+        
+        // Only save if we have data
+        guard !ecgData.isEmpty else { return }
+        
+        // Calculate session metrics
+        let values = ecgData.map { $0.value }
+        let minValue = values.min() ?? 0
+        let maxValue = values.max() ?? 0
+        let durationSeconds = Int(endTime.timeIntervalSince(startTime))
+        
+        // Calculate heart rate (this is simplified - would normally be more complex)
+        let heartRate = calculateHeartRate()
+        
+        // Create session and add to history
+        let session = ECGSession(
+            startTime: startTime,
+            endTime: endTime,
+            averageHeartRate: heartRate,
+            minValue: minValue,
+            maxValue: maxValue,
+            abnormalCount: abnormalTimestamps.count,
+            durationSeconds: durationSeconds
+        )
+        
+        // Add session to our array
+        historicalSessions.append(session)
+        
+        // Save to UserDefaults
+        saveSessions()
+    }
+    
+    private func calculateHeartRate() -> Int {
+        // Simple simulation of heart rate calculation
+        // In a real app, this would use a more sophisticated algorithm
+        let maxHeartRate = 180
+        let minHeartRate = 50
+        
+        if backendMode == "abnormal" {
+            return Int.random(in: 110...maxHeartRate)
+        } else {
+            return Int.random(in: minHeartRate...100)
+        }
+    }
+    
+    // MARK: - AI Analysis
+    
+    func toggleAIAnalysis() {
+        isAIAnalysisEnabled.toggle()
+        
+        if isAIAnalysisEnabled && currentSessionStartTime != nil {
+            // Run initial analysis when enabled
+            runAIAnalysis()
+        }
+    }
+    
+    private func runAIAnalysis() {
+        // Don't analyze if we don't have data
+        guard !ecgData.isEmpty else { return }
+        
+        // Set analyzing flag to show loading indicator
+        isAnalyzing = true
+        
+        // Simulate AI processing delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            guard let self = self else { return }
+            
+            // Generate a simulated analysis result
+            self.currentAnalysis = self.generateAnalysisResult()
+            self.isAnalyzing = false
+        }
+    }
+    
+    private func generateAnalysisResult() -> ECGAnalysisResult {
+        // Calculate heart rate as before
+        let heartRate = calculateHeartRate()
+        
+        // Determine rhythm type based on backend mode and some randomness
+        let rhythmTypes = ECGAnalysisResult.RhythmType.allCases
+        let rhythmType: ECGAnalysisResult.RhythmType
+        
+        if backendMode == "abnormal" {
+            // Skip normal rhythm for abnormal mode
+            rhythmType = rhythmTypes.filter { $0 != .normal }.randomElement() ?? .tachycardia
+        } else {
+            // 80% chance of normal in normal mode
+            rhythmType = Double.random(in: 0...1) < 0.8 ? .normal : rhythmTypes.randomElement() ?? .normal
+        }
+        
+        // Generate confidence level
+        let confidence = Double.random(in: 0.7...0.98)
+        
+        // Generate recommendation based on rhythm type
+        let recommendation: String
+        switch rhythmType {
+        case .normal:
+            recommendation = "Aucune action nécessaire. Rythme cardiaque normal."
+        case .tachycardia:
+            recommendation = "Rythme rapide détecté. Évitez l'exercice intense et consultez un médecin si cela persiste."
+        case .bradycardia:
+            recommendation = "Rythme lent détecté. Repos recommandé. Consultez un médecin si des symptômes apparaissent."
+        case .irregular:
+            recommendation = "Rythme irrégulier détecté. Consultez un médecin pour une évaluation."
+        case .pvc:
+            recommendation = "Contractions ventriculaires prématurées détectées. Surveillez et consultez un cardiologue."
+        case .afib:
+            recommendation = "Signes possibles de fibrillation auriculaire. Consultation médicale urgente recommandée."
+        }
+        
+        return ECGAnalysisResult(
+            timestamp: Date(),
+            heartRate: heartRate,
+            rhythmType: rhythmType,
+            confidence: confidence,
+            recommendation: recommendation
+        )
+    }
+    
+    // MARK: - Session Storage
+    
+    private func saveSessions() {
+        if let encodedData = try? JSONEncoder().encode(historicalSessions) {
+            UserDefaults.standard.set(encodedData, forKey: "ecgSessions")
+        }
+    }
+    
+    private func loadSavedSessions() {
+        if let savedData = UserDefaults.standard.data(forKey: "ecgSessions"),
+           let decodedSessions = try? JSONDecoder().decode([ECGSession].self, from: savedData) {
+            historicalSessions = decodedSessions
+        }
+    }
+    
+    func clearHistory() {
+        historicalSessions.removeAll()
+        saveSessions()
     }
 
     // Function to start polling the /data endpoint
@@ -243,28 +502,101 @@ class ECGViewModel: ObservableObject {
         let new_mode: String
     }
 
+    // Function to export ECG data as CSV
+    func exportECGData() -> URL? {
+        // Format date for CSV
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        
+        // Create CSV content with metadata header section
+        var csvString = "# ECG Data Export\n"
+        csvString.append("# Export Date: \(dateFormatter.string(from: Date()))\n")
+        csvString.append("# Mode: \(backendMode)\n\n")
+        
+        // Add abnormal events section if available
+        if !abnormalTimestamps.isEmpty {
+            csvString.append("# Abnormal Events\n")
+            for (index, timestamp) in abnormalTimestamps.enumerated() {
+                csvString.append("# Event \(index + 1): \(dateFormatter.string(from: timestamp))\n")
+            }
+            csvString.append("\n")
+        }
+        
+        // Add AI analysis if available
+        if let analysis = currentAnalysis {
+            csvString.append("# AI Analysis Results\n")
+            csvString.append("# Time: \(dateFormatter.string(from: analysis.timestamp))\n")
+            csvString.append("# Heart Rate: \(analysis.heartRate) BPM\n")
+            csvString.append("# Rhythm Type: \(analysis.rhythmType.rawValue)\n")
+            csvString.append("# Confidence: \(String(format: "%.1f%%", analysis.confidence * 100))\n")
+            csvString.append("# Recommendation: \(analysis.recommendation)\n\n")
+        }
+        
+        // Add data columns header
+        csvString.append("Time,Value\n")
+        
+        // Add data rows
+        for dataPoint in ecgData {
+            let timeString = dateFormatter.string(from: dataPoint.time)
+            csvString.append("\(timeString),\(dataPoint.value)\n")
+        }
+        
+        // Get the temporary directory instead of documents (better for sharing)
+        let tempDirectoryURL = FileManager.default.temporaryDirectory
+        
+        // Create filename with current date
+        let currentDate = Date()
+        let dateFormatter2 = DateFormatter()
+        dateFormatter2.dateFormat = "yyyyMMdd_HHmmss"
+        let fileName = "ECG_Data_\(dateFormatter2.string(from: currentDate)).csv"
+        
+        // Create file URL in temp directory
+        let fileURL = tempDirectoryURL.appendingPathComponent(fileName)
+        
+        // Write to file
+        do {
+            try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
+            return fileURL
+        } catch {
+            print("Error writing CSV file: \(error)")
+            return nil
+        }
+    }
+
     // Function to trigger notification (remains the same)
     private func triggerAbnormalNotification(value: Double) {
         let center = UNUserNotificationCenter.current()
-        center.getNotificationSettings { settings in
+        
+        // Capturer la valeur pour l'utiliser dans le closure
+        let capturedValue = value
+        
+        center.getNotificationSettings { [weak self] settings in
             guard settings.authorizationStatus == .authorized else {
                 print("Notification permission not granted.")
                 return
             }
-            // ... (rest of the notification logic is unchanged) ...
-            let content = UNMutableNotificationContent()
-            content.title = "Abnormal ECG Detected!"
-            content.body = String(format: "An unusual ECG reading of %.1f mV was detected.", value)
-            content.sound = .default
-            content.badge = 1 // Or manage badge count appropriately
-
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-            let requestIdentifier = "abnormalECGNotification_\(UUID().uuidString)"
-            let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
-
-            center.add(request) { error in
-                if let error = error {
-                    print("Error adding notification request: \(error)")
+            
+            // Move to main thread to avoid updating during view updates
+            Task { @MainActor in
+                guard let self = self else { return }
+                
+                let content = UNMutableNotificationContent()
+                content.title = "Rythme cardiaque anormal détecté!"
+                content.body = String(format: "Une lecture ECG inhabituelle de %.1f mV a été détectée.", capturedValue)
+                content.sound = .default
+                content.categoryIdentifier = "ECG_ABNORMAL" // Set category for notification actions
+                
+                // Don't set badge number as it can cause issues
+                // content.badge = 1
+                
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+                let requestIdentifier = "abnormalECGNotification_\(UUID().uuidString)"
+                let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
+                
+                center.add(request) { error in
+                    if let error = error {
+                        print("Erreur lors de l'ajout de la notification: \(error)")
+                    }
                 }
             }
         }
@@ -298,14 +630,21 @@ class ECGViewModel: ObservableObject {
     // Observe backendMode changes to track abnormal duration
     private func handleAbnormalDuration() {
         abnormalCheckTimer?.invalidate()
-        if backendMode == "abnormal" {
+        
+        // Capturer l'état actuel pour l'utiliser dans le Timer
+        let isAbnormal = backendMode == "abnormal"
+        
+        if isAbnormal {
             if abnormalStartTime == nil {
                 abnormalStartTime = Date()
             }
+            
             // Run timer logic on main thread to safely access MainActor properties
             abnormalCheckTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-                DispatchQueue.main.async { 
+                // Exécuter sur le MainActor car il accède à des propriétés isolées
+                Task { @MainActor in
                     guard let self = self else { return }
+                    
                     if self.backendMode != "abnormal" {
                         self.abnormalStartTime = nil
                         self.abnormalCheckTimer?.invalidate()
@@ -320,8 +659,12 @@ class ECGViewModel: ObservableObject {
             }
         } else {
             abnormalStartTime = nil
-            shouldShowCallAlert = false
-            hasDismissedCallAlert = false // Reset when mode returns to normal
+            
+            // Use async to avoid updating state during view updates
+            Task { @MainActor in
+                shouldShowCallAlert = false
+                hasDismissedCallAlert = false // Reset when mode returns to normal
+            }
         }
     }
 
@@ -338,5 +681,6 @@ class ECGViewModel: ObservableObject {
         statusPollingSubscription?.cancel()
         abnormalCheckTimer?.invalidate()
         backendModeObserver?.cancel()
+        sessionTimer?.invalidate()
     }
 } 

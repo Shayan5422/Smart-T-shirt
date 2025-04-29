@@ -38,41 +38,62 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
-                print("Error requesting notification authorization: \(error.localizedDescription)")
+                print("Erreur lors de la demande d'autorisation de notification: \(error.localizedDescription)")
                 return
             }
 
             if granted {
-                print("Notification permission granted.")
-                // Attempt to register for remote notifications on the main thread
-                DispatchQueue.main.async {
-                    application.registerForRemoteNotifications()
-                }
+                print("Autorisation de notification accordée.")
+                // Request for local notifications only - no remote needed
+                self.setupNotificationCategories()
             } else {
-                print("Notification permission denied.")
+                print("Autorisation de notification refusée.")
             }
         }
+    }
+    
+    // Setup notification categories and actions
+    private func setupNotificationCategories() {
+        // Define action for calling emergency
+        let callAction = UNNotificationAction(
+            identifier: "CALL_ACTION",
+            title: "Appeler les urgences",
+            options: .foreground
+        )
+        
+        // Define action for dismissing
+        let dismissAction = UNNotificationAction(
+            identifier: "DISMISS_ACTION",
+            title: "Ignorer",
+            options: .destructive
+        )
+        
+        // Create category with actions
+        let abnormalCategory = UNNotificationCategory(
+            identifier: "ECG_ABNORMAL",
+            actions: [callAction, dismissAction],
+            intentIdentifiers: [],
+            options: .customDismissAction
+        )
+        
+        // Register the category
+        UNUserNotificationCenter.current().setNotificationCategories([abnormalCategory])
     }
 
     // --- Remote Notification Delegate Methods ---
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // Convert token data to a string format suitable for sending to the backend
+        // We're not actually using remote notifications, but keeping this method stub
+        // in case you need it in the future
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let tokenString = tokenParts.joined()
-        print("Device Token: \(tokenString)")
-        
-        // TODO: Send this tokenString to your backend
-        // Using the ViewModel instance we created
-        // Make sure the ViewModel is initialized before this is called (using lazy var helps)
-        Task { // Use Task for async operation
-             await ecgViewModel.sendDeviceTokenToBackend(token: tokenString)
-        }
+        print("Token de l'appareil: \(tokenString)")
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register for remote notifications: \(error.localizedDescription)")
-        // Handle the error appropriately (e.g., log it, inform the user)
+        // This error is expected since we don't have proper entitlements for remote notifications
+        // Just log it, but no need to show to user
+        print("Échec de l'enregistrement pour les notifications à distance: \(error.localizedDescription)")
     }
 
     // --- UNUserNotificationCenter Delegate Methods ---
@@ -82,13 +103,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                 willPresent notification: UNNotification, 
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
-        print("Received notification while app in foreground: \(notification.request.content.title)")
-        // Decide how to present the notification (banner, sound, badge)
-        // For this app, showing an alert might be good even in the foreground.
-        completionHandler([.banner, .sound, .badge]) 
+        print("Notification reçue avec l'application au premier plan: \(notification.request.content.title)")
         
-        // You could potentially trigger a data refresh here if needed
-        // ecgViewModel.fetchData()
+        // On iOS 14 and later, we can show notification banner even in foreground
+        if #available(iOS 14.0, *) {
+            completionHandler([.banner, .sound])
+        } else {
+            completionHandler([.alert, .sound])
+        }
     }
 
     // Handle user tapping on the notification
@@ -96,11 +118,21 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                                 didReceive response: UNNotificationResponse, 
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         
-        let userInfo = response.notification.request.content.userInfo
-        print("User tapped on notification: \(userInfo)")
-        
-        // Handle the action based on the notification content
-        // e.g., navigate to a specific view
+        // Handle action based on identifier
+        switch response.actionIdentifier {
+        case "CALL_ACTION":
+            if let url = URL(string: "tel://112") {
+                DispatchQueue.main.async {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            }
+        case UNNotificationDefaultActionIdentifier:
+            // User tapped the notification itself
+            print("L'utilisateur a appuyé sur la notification")
+            // Could navigate to a specific view here if needed
+        default:
+            break
+        }
         
         completionHandler()
     }
