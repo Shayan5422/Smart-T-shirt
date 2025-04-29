@@ -31,6 +31,22 @@
 - **Session History**: Track progress over time with detailed history views
 - **Comprehensive Reports**: Generate detailed reports including ECG, stress, and meditation data
 
+## 💡 How It Works
+
+The Smart T-Shirt Monitor operates within a comprehensive system architecture:
+
+1. **Data Collection**: ECG data is captured by sensors embedded in the smart t-shirt
+2. **Data Transmission**: Sensor data is transmitted to the backend server
+3. **AI Analysis**: The backend processes the ECG data through artificial intelligence models to:
+   - Determine if the heart rhythm is normal or abnormal
+   - Identify specific cardiac conditions when present
+   - Calculate stress levels and HRV scores
+4. **iOS App Display**: Results and analysis are sent to the iOS app for real-time visualization
+5. **Alert System**: Abnormal patterns trigger alerts on the app with emergency calling options
+6. **Data Storage**: All sessions are stored for historical analysis and medical review
+
+This architecture enables detailed medical-grade analysis while maintaining a user-friendly interface for everyday health monitoring.
+
 ## 🚀 Installation
 
 ### Requirements
@@ -132,6 +148,15 @@ The backend server exposes the following endpoints:
 - **GET /status**: Returns the current backend status and mode
 - **POST /set_mode/{mode}**: Sets the backend mode (normal, abnormal, stopped)
 - **POST /register_device**: Registers a device for notifications
+
+### Backend AI Models
+
+The backend incorporates advanced AI models for ECG analysis:
+
+- **Rhythm Classification**: Detection of normal rhythm vs. various arrhythmias
+- **Disease Identification**: Diagnosis of specific cardiac conditions
+- **Anomaly Detection**: Identification of unexpected patterns in ECG waveforms
+- **Stress Analysis**: Calculation of stress levels from heart rate variability
 
 ## 📄 License
 
